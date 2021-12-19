@@ -20,16 +20,20 @@ const tufa  = new Tufa(
 (async function(){
     const  response = await tufa.connect();
     concurrently([
-        { command: 'node src/index.js ', name: 'run', env: { ...awsEnvs(response.credentials),
+        { command: 'node src/index.js ', name: 'run', env: { ...awsEnvs(response),
                 ...pgEnvs(response.resources.customersDb),
                 INVOICE_BUCKET: response.resources.invoiceBucket.path   } },
-        { command: 'jest --config=jest.e2e.config.json --detectOpenHandles', name: 'tests', env: { ...awsEnvs(response.credentials),
+        { command: 'jest --config=jest.e2e.config.json --detectOpenHandles', name: 'tests', env: { ...awsEnvs(response),
                 ...pgEnvs(response.resources.customersDb),
                 INVOICE_BUCKET: response.resources.invoiceBucket.path  } },
     ], {
         prefix: '',
         killOthers: ['failure', 'success']
-    })
+    }).then(() => {
+        tufa.end();
+    } , () => {
+        tufa.end();
+    });
 })()
 
 
