@@ -20,7 +20,7 @@ describe('testing invoice storage service ',function (){
     beforeAll(async () => {
         try {
             tufaRuntime = await tufa.connect();
-            setEnvs(awsEnvs(tufaRuntime.credentials));
+            setEnvs(awsEnvs(tufaRuntime));
         } catch (err) {
             console.log(err.message);
         }
