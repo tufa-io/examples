@@ -1,6 +1,5 @@
-import  {Tufa} from 'tufa-js';
+import  {Tufa, utils} from 'tufa-js';
 import concurrently from 'concurrently';
-import {awsEnvs, pgEnvs } from '../utils.js';
 const tufa  = new Tufa(
     {
         request: {
@@ -20,11 +19,11 @@ const tufa  = new Tufa(
 (async function(){
     const  response = await tufa.connect();
     concurrently([
-        { command: 'node src/index.js ', name: 'run', env: { ...awsEnvs(response),
-                ...pgEnvs(response.resources.customersDb),
+        { command: 'node src/index.js ', name: 'run', env: { ...utils.awsEnvs(response),
+                ...utils.pgEnvs(response.resources.customersDb),
                 INVOICE_BUCKET: response.resources.invoiceBucket.path   } },
-        { command: 'jest --config=jest.e2e.config.json --detectOpenHandles', name: 'tests', env: { ...awsEnvs(response),
-                ...pgEnvs(response.resources.customersDb),
+        { command: 'jest --config=jest.e2e.config.json --detectOpenHandles', name: 'tests', env: { ...utils.awsEnvs(response),
+                ...utils.pgEnvs(response.resources.customersDb),
                 INVOICE_BUCKET: response.resources.invoiceBucket.path  } },
     ], {
         prefix: '',

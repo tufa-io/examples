@@ -1,6 +1,5 @@
-import  {Tufa} from 'tufa-js';
+import  {Tufa, utils} from 'tufa-js';
 import {InvoiceStorage} from '../../src/services/invoice-storage';
-import {awsEnvs, setEnvs } from '../utils';
 const AWS = require('aws-sdk');
 
  jest.setTimeout(60000)
@@ -20,7 +19,7 @@ describe('testing invoice storage service ',function (){
     beforeAll(async () => {
         try {
             tufaRuntime = await tufa.connect();
-            setEnvs(awsEnvs(tufaRuntime));
+            utils.setEnvs(utils.awsEnvs(tufaRuntime));
         } catch (err) {
             console.log(err.message);
         }

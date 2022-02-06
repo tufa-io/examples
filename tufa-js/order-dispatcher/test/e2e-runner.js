@@ -1,6 +1,6 @@
-import  {Tufa} from 'tufa-js';
+import  {Tufa, utils} from 'tufa-js';
 import concurrently from 'concurrently';
-import {awsEnvs, pgEnvs } from './utils.js';
+
 const tufa  = new Tufa(
     {
         request: {
@@ -27,8 +27,8 @@ const tufa  = new Tufa(
 
 (async function(){
     const  response = await tufa.connect();
-    const env = { ...awsEnvs(response),
-        ...pgEnvs(response.resources.itemsDb),
+    const env = { ...utils.awsEnvs(response),
+        ...utils.pgEnvs(response.resources.itemsDb),
         IN_ITEMS_QUEUE_URL: response.resources.inItemsQueue.url,
         IN_ITEMS_QUEUE_ARN: response.resources.inItemsQueue.arn,
         OUT_ITEMS_QUEUE_URL: response.resources.outItemsQueue.url,
