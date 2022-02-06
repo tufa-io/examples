@@ -24,6 +24,6 @@
     "concurrently": "^6.4.0",
     "jest": "^27.4.3",
     "needle": "^3.0.0",
-    "tufa-js": "0.0.1"
+    "tufa-js": "0.0.2"
   }
 }
