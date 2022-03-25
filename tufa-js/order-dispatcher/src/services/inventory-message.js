@@ -8,9 +8,9 @@ export class InventoryMessage {
             MessageBody: ''
         };
         if(inventoryItem){
-            params.MessageBody =  `item ${inventoryItem.id} is in stock`;
+            params.MessageBody =  JSON.stringify({id: inventoryItem.id, msg:`item ${inventoryItem.id} is in stock`});
         } else {
-            params.MessageBody =  `item ${requestedId} NOT in stock`;
+            params.MessageBody =  JSON.stringify({id: requestedId, msg:`item ${requestedId} NOT in stock`});
         }
         return sqs.sendMessage(params).promise();
     }
