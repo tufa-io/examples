@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 import pkg from 'pg';
 const {Client} = pkg;
 const sns = new AWS.SNS();
-
+const s3 = new AWS.S3();
 jest.setTimeout(60000);
 const sqs = new AWS.SQS();
 describe('order dispatcher service e2e ',function (){
@@ -16,8 +16,13 @@ describe('order dispatcher service e2e ',function (){
             Message: JSON.stringify({id:1}),
         }).promise();
         await wait(2);
-        const result = await receiveMessages();
-        expect(JSON.parse(result[0].Body)).toEqual({id: 1, msg:'item 1 is in stock'});
+
+        const file = await s3.getObject({
+            Bucket: process.env.S3_BUCKET,
+            Key: '1.json',
+        }).promise();
+
+        expect(JSON.parse(file.Body.toString('utf-8'))).toEqual({id: 1, msg:'item 1 is in stock'})
     })
 
     it('test item not in stock', async function (){
@@ -26,17 +31,15 @@ describe('order dispatcher service e2e ',function (){
             Message: JSON.stringify({id: 5})
         }).promise();
         await wait(3);
-        const result = await receiveMessages();
-        expect(JSON.parse(result[0].Body)).toEqual({id: 5, msg: 'item 5 NOT in stock'});
+
+        const file = await s3.getObject({
+            Bucket: process.env.S3_BUCKET,
+            Key: '5.json',
+        }).promise();
+
+        expect(JSON.parse(file.Body.toString('utf-8'))).toEqual({id: 5, msg:'item 5 NOT in stock'})
     })
 });
-
-const receiveMessages = async ()=> {
-    const params = {
-        QueueUrl: process.env.OUT_ITEMS_QUEUE_URL
-    };
-    return sqs.receiveMessage(params).promise().then(result => result?.Messages);
-}
 
 
 
